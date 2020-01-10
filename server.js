@@ -14,10 +14,35 @@ const moreCount = 6;
 const app = new Koa();
 app.use(cors());
 app.use(koaBody({
-    json: true
+    json: true,
+    urlencoded: true,
+    multipart: true,
 }));
 
 const router = new Router();
+
+ 
+ // app.use(koaStatic(publ));
+  
+ // let catalog = fs.readdirSync(publ);
+  
+  app.use(async (ctx) => {
+    ctx.response.set({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': ['DELETE', 'PUT', 'PATCH'],
+    });
+    if (ctx.request.method === 'OPTIONS') {
+      ctx.response.body = '';
+    }
+
+    ctx.response.body = 'server response';
+  
+if (ctx.request.method === 'POST') {
+     // const { file } = ctx.request.files;
+      console.log('1');
+
+    }
+  });
 
 /* app.use(async (ctx, next) => {
 
@@ -49,9 +74,9 @@ const router = new Router();
     }
 }); */
 
-console.log('1')
 
-router.get('/api/top-sales', async (ctx, next) => {
+
+/* router.get('/api/top-sales', async (ctx, next) => {
     return fortune(ctx, items.filter(o => topSaleIds.includes(o.id)).map(itemBasicMapper));
 });
 
@@ -92,7 +117,7 @@ router.post('', async (ctx, next) => {
 });
 
 app.use(router.routes())
-app.use(router.allowedMethods());
+app.use(router.allowedMethods()); */
 
 const port = process.env.PORT || 7070;
 const server = http.createServer(app.callback());
