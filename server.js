@@ -4,6 +4,7 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const cors = require('koa2-cors');
 const koaBody = require('koa-body');
+const request = require('request');
 
 const categories = JSON.parse(fs.readFileSync('./data/categories.json'));
 const items = JSON.parse(fs.readFileSync('./data/products.json'));
@@ -35,12 +36,31 @@ const router = new Router();
       ctx.response.body = '';
     }
 
-  //  ctx.response.body = 'server response';
+    ctx.response.body = 'server response';
   
 if (ctx.request.method === 'POST') {
+
+
+    request({
+        method: 'GET',
+        url: 'https://enmxqv17l3bv.x.pipedream.net/',
+        // параметры GET-запроса
+        // index.php?param=edit&value=10
+    /*     qs: {
+          param: 'edit',
+          value: 100
+        } */
+  //     }, function (error, response, body) {
+   //    if (!error && response.statusCode == 200) {
+         // console.log(body);
+         // валидация и 
+         // обработка полученного ответа, заголовков
+    //     answer = body;
+   //    }
+     })
      // const { file } = ctx.request.files;
-     ctx.response.body = 'server response'; 
-     console.log('1');
+    // ctx.response.body = 'server response'; 
+    // console.log('1');
 
     }
   });
