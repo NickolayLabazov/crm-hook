@@ -39,7 +39,8 @@ const router = new Router();
   
 if (ctx.request.method === 'POST') {
      // const { file } = ctx.request.files;
-      console.log('1');
+     ctx.response.body = 'POST'; 
+     console.log('1');
 
     }
   });
