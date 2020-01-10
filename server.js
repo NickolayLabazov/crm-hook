@@ -35,11 +35,11 @@ const router = new Router();
       ctx.response.body = '';
     }
 
-    ctx.response.body = 'server response';
+  //  ctx.response.body = 'server response';
   
 if (ctx.request.method === 'POST') {
      // const { file } = ctx.request.files;
-     ctx.response.body = 'POST'; 
+     ctx.response.body = 'server response'; 
      console.log('1');
 
     }
