@@ -46,7 +46,7 @@ if (ctx.request.method === 'POST') {
     request({
         method: 'POST',
         url: 'https://enmxqv17l3bv.x.pipedream.net/',
-        obj,
+        body: obj,
         // параметры GET-запроса
         // index.php?param=edit&value=10
     /*     qs: {
