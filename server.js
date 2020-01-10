@@ -19,7 +19,7 @@ app.use(koaBody({
 
 const router = new Router();
 
-app.use(async (ctx, next) => {
+/* app.use(async (ctx, next) => {
 
     ctx.response.body = 'server response';
   
@@ -47,7 +47,9 @@ app.use(async (ctx, next) => {
       }
       ctx.response.status = 204;
     }
-});
+}); */
+
+console.log('1')
 
 router.get('/api/top-sales', async (ctx, next) => {
     return fortune(ctx, items.filter(o => topSaleIds.includes(o.id)).map(itemBasicMapper));
@@ -85,6 +87,7 @@ router.get('/api/items/:id', async (ctx, next) => {
 
 router.post('', async (ctx, next) => {    
    // const { owner: { phone, address }, items } = JSON.parse(ctx.request.body);
+   console.log('2')
    console.log(JSON.parse(ctx.request.body))
 });
 
