@@ -83,7 +83,7 @@ router.get('/api/items/:id', async (ctx, next) => {
     return fortune(ctx, item);
 });
 
-router.post('/api', async (ctx, next) => {    
+router.post('', async (ctx, next) => {    
    // const { owner: { phone, address }, items } = JSON.parse(ctx.request.body);
    console.log(JSON.parse(ctx.request.body))
 });
