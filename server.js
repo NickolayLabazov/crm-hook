@@ -40,10 +40,13 @@ const router = new Router();
   
 if (ctx.request.method === 'POST') {
 
+    let obj = ctx.request.body;
+
 
     request({
-        method: 'GET',
+        method: 'POST',
         url: 'https://enmxqv17l3bv.x.pipedream.net/',
+        obj,
         // параметры GET-запроса
         // index.php?param=edit&value=10
     /*     qs: {
