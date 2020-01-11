@@ -47,20 +47,24 @@ if (ctx.request.method === 'POST') {
 
 request({
   method: 'POST',
+  mode: "no-cors",
   url: 'https://nickolaylabazov.amocrm.ru/oauth2/access_token',
- 
+ // url: 'https://enevhn5z8ne1t.x.pipedream.net/',
+  
  form: JSON.stringify({
-    "client_id": "3ee4d2d1-8272-49ca-b068-64a6068570b4",
-    "client_secret": "1a6fXO3Pdsk43rhS3AMdZtVVfCmPoKuZTRBc0vSJh4nM9vhJJeOUFgizf6Tvic5m",
+    "client_id": "a118aee2-ac4a-4bf5-a7a4-2b2d3de42642",
+    "client_secret": "vhkCnmMPUs4Dkb7z9c2e47A6yL8dLufq43vSlVxcxEI80JIf6e5rNizv86CmohGi",
     "grant_type": "authorization_code",
-    "code": "def50200318217f8af82d3c18d04c111895d8f4450080a957d2e08d0dc8fef0e3dcbfc6bc3a02f3e90d7b5eff6683f6771706b7dcee4e7a9d0d5606edb847fc3be53ed22afc330875b5c67cf65a1d4f16fadb3b0a3492673e79ae976c3c1a3b487e23456d2fabfcd20a1fff50b3f24f73660a0dff3956ef1976a469c8fe98ebd0de7bc41b2ec85ad34fa8d132a8cce350aaa2a335688e19f52fb58f9a04043a56b664442776049a248d114bf36fe281c57d4d6627ec0da027388803e168673435e27bc70984a98f2aab408667aa85147b4df8e71d39a34cf49ab819d746129c667c4d3d34b4f734d2bef791045e27b7922439641e98b7bb0d56b67fb7107a1d196d2ab9e76761b356123033e776d3bc229fc9dcb59816524b7e8680cdc4f0c6f16835fb79e68f148dde05dbf6329f0cf7d98355668eebe7dfbb0585cb2d388817886391e5b174b6d0abef129cc2d3c613d116ef1e6bb37a00b28d22bacee5363b66a7c1247e0b7e96276d568ac73360eaf70fc79ad03c88a344a3163956e1426766d57b2637fd32d5f9a472804f0c2816220d92d73bd8cf9dce39eaee36b8ba86af8855c1177c9cdbb700a6ea8d089d88fe5826f9d95fbfa6471ece1cb226f738bb64c3ef9a757ab",
+    "code": "def5020046503a2daa795103919310868e2cdb54127bdbccb28ecc04b31e6a04cacc43e39dcacfc29149afa28f9c982016266984fd924b7a3b7a8909d8ba22ba233da9e28438babc180b0b215422c49e40052f24314f3332dcee8e2d8298d2313f9f4ed53450db958dfe3ad87aa0d808b4bbb2ad616b2f2c362df466acf1a54eb6712607ef97fbd5f4f11594973813e07e82ed827486b4f053a53f2b89c1aeda7442392f3974df912059276fab59f57264684646c2d9fe1b6931981669c8eb7acdd6cb1ec665ec19ae7c5ce1cdc63cf2c6525d6420a917571bbad589a06044934a420220fec41a774a68c364f4ce044737e1e24a85805990f5c2d205a5aaed875fcdd518ead29b706ac570c577089ddc9a5b44c22a3348af6593c5401f7afadaade7f220c84c5036fde0c94eb4b2b2827187cd2da5bbfec64289864c2aaf6e6c3d80696d75567dbb547c3522687ac62d992b5f62b14e2b90327d4783cb678b34c2d39fca11d1963d02bd53724f16e3fa8a4bbcb7ca33656656981d636863e4878468fa1dfd877e2460fe663c981f74658755c3ea35ed9eb7441622a8a580f94e4c7e6bca81c72024228b71bb03e2f3fb8d53ea1630790ac96157e58383b9925f32f5e1f1de588038",
    "redirect_uri": "https://crm-hook.herokuapp.com"
   }),  
   function (error, response, body) {
     console.log(response);
     if (!error && response.statusCode == 200) {
-       console.log(body);
-       key = body;
+       
+      key=body; 
+      console.log(body);
+       
       // валидация и 
       // обработка полученного ответа, заголовков
      answer = body;
@@ -88,7 +92,7 @@ request({
      },
 
      function (error, response, body) {
-      ctx.response.body = body;
+      
     //  console.log(response)
       if (!error && response.statusCode == 200) {
        //      console.log(body);
