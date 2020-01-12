@@ -126,8 +126,8 @@ app.use(async (ctx) => {
     request({
       method: 'POST',
       mode: "cors",
-      url: 'https://nickolaylabazov.amocrm.ru/api/v2/leads',
-      //url: 'https://en2pcob5ut59x.x.pipedream.net/',
+    //  url: 'https://nickolaylabazov.amocrm.ru/api/v2/leads',
+      url: 'https://en2pcob5ut59x.x.pipedream.net/',
       headers: {        
         'Authorization': `Bearer ${accessToken}`        
        },
