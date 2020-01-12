@@ -4,186 +4,144 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const cors = require('koa2-cors');
 const koaBody = require('koa-body');
-const request = require('request');
+//const request = require('request');
+const request = require('request-promise')
 
 const categories = JSON.parse(fs.readFileSync('./data/categories.json'));
 const items = JSON.parse(fs.readFileSync('./data/products.json'));
 const topSaleIds = [66, 65, 73];
 const moreCount = 6;
 
-
 const app = new Koa();
 app.use(cors());
 app.use(koaBody({
-    json: true,
-    urlencoded: true,
-    multipart: true,
+  json: true,
+  urlencoded: true,
+  multipart: true,
 }));
 
 const router = new Router();
 
-let key = 0;
+let newLead = {
+	add: [{
+		name: "Покупка карандашей",
+		created_at: "1508101200",
+		updated_at: "1508274000",
+		status_id: "13670637",
+		responsible_user_id: "957083",
+		sale: "5000",
+		tags: "pencil, buy",
+		contacts_id: [
+			"1099149"
+		],
+		company_id: "1099148",
+		catalog_elements_id: {
+			99999: {
+				111111: 10
+			}
+		},
+		custom_fields: [{
+				id: "4399649",
+				values: [
+					"3691615",
+					"3691616",
+					"3691617"
+				]
+			},
+			{
+				id: "4399656",
+				values: [{
+					value: "2017-10-26"
+				}]
+			},
+			{
+				id: "4399655",
+				values: [{
+						value: "ул. Охотный ряд, 1",
+						subtype: "address_line_1"
+					},
+					{
+						value: "Москва",
+						subtype: "city"
+					},
+					{
+						value: "101010",
+						subtype: "zip"
+					},
+					{
+						value: "RU",
+						subtype: "country"
+					}
+				]
+			}
+		]
+	}]
+}
 
- 
- // app.use(koaStatic(publ));
-  
- // let catalog = fs.readdirSync(publ);
-  
-  app.use(async (ctx) => {
-    ctx.response.set({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': ['DELETE', 'PUT', 'PATCH'],
-    });
-    if (ctx.request.method === 'OPTIONS') {
-      ctx.response.body = '';
-    }
+let accessToken = null;
+let refreshToken = null;
+let expires = null;
 
-    ctx.response.body = 'server response';
-  
-if (ctx.request.method === 'POST') {
- ctx.response.body = key;
-    let obj = ctx.request.body;
-//console.log(JSON.parse(obj))
+if (accessToken !== null) {
+  request({
+    method: 'POST',
+    mode: "cors",
+     url: 'https://nickolaylabazov.amocrm.ru/oauth2/access_token',
+  //  url: 'https://en2pcob5ut59x.x.pipedream.net/',
 
-request({
-  method: 'POST',
-  mode: "no-cors",
-  url: 'https://nickolaylabazov.amocrm.ru/oauth2/access_token',
- // url: 'https://enevhn5z8ne1t.x.pipedream.net/',
-  
- form: JSON.stringify({
-    "client_id": "a118aee2-ac4a-4bf5-a7a4-2b2d3de42642",
-    "client_secret": "vhkCnmMPUs4Dkb7z9c2e47A6yL8dLufq43vSlVxcxEI80JIf6e5rNizv86CmohGi",
-    "grant_type": "authorization_code",
-    "code": "def5020046503a2daa795103919310868e2cdb54127bdbccb28ecc04b31e6a04cacc43e39dcacfc29149afa28f9c982016266984fd924b7a3b7a8909d8ba22ba233da9e28438babc180b0b215422c49e40052f24314f3332dcee8e2d8298d2313f9f4ed53450db958dfe3ad87aa0d808b4bbb2ad616b2f2c362df466acf1a54eb6712607ef97fbd5f4f11594973813e07e82ed827486b4f053a53f2b89c1aeda7442392f3974df912059276fab59f57264684646c2d9fe1b6931981669c8eb7acdd6cb1ec665ec19ae7c5ce1cdc63cf2c6525d6420a917571bbad589a06044934a420220fec41a774a68c364f4ce044737e1e24a85805990f5c2d205a5aaed875fcdd518ead29b706ac570c577089ddc9a5b44c22a3348af6593c5401f7afadaade7f220c84c5036fde0c94eb4b2b2827187cd2da5bbfec64289864c2aaf6e6c3d80696d75567dbb547c3522687ac62d992b5f62b14e2b90327d4783cb678b34c2d39fca11d1963d02bd53724f16e3fa8a4bbcb7ca33656656981d636863e4878468fa1dfd877e2460fe663c981f74658755c3ea35ed9eb7441622a8a580f94e4c7e6bca81c72024228b71bb03e2f3fb8d53ea1630790ac96157e58383b9925f32f5e1f1de588038",
-   "redirect_uri": "https://crm-hook.herokuapp.com"
-  }),  
-  function (error, response, body) {
+    body: ({
+      "client_id": "b577500b-8ff9-4cfc-b43f-2e0e93436177",
+      "client_secret": "Y67fzyPFpovd5b7aiPv9jSjgU4Ya4oftPSIsNCt7YtyA9zdyqhp9x4Sr8XupBobJ",
+      "grant_type": "authorization_code",
+      "code": "def50200026301329977efd45429fa688663389a4637fccc2a74f51139042adf041fdb558fb4721d542ac0e7c1f46111e446a1bfccb4d7e585fe79a7083cbca006f282cab367fa87095a0be62355c7e3c8c39d9a971587468fa5c78bbf5560faa95b76a202982ddc4645615d3b3e53b4c0b9d9ba75d0f11d0225e29d370a9b8f17cd7cd4942c7f944bef7b33afa357f565bd0692bea9e107a757165fe4fecf12a5a78c1d67185de70a26a05354b9a026f3f7f29dbe2b54f5338bf9cfef7644fdf459a6df21c8b8e7bec5b6b1949b77ff0fd16b98e209a64dcf0011000f5e54c2dcbec04f6e32689662d2eeda113b0952d4677fa4c0deb7e30a4062aa5b84bec354e9e9af9225fad2d2227e5016ff104debb54d9eb64a8f0e08e96606b0ebe09b787e7c61f5f8a9b930d95f0339f3e71693028d38ad2abd6bdc57ea1e7575502c30f4d5a8132d809fb413b363a9e4f5dde0bbb9a857b31127267a7022457f91be1d1bf62ad4cf6b8a916619baeb4962a38ba0b36ea251757235db075445049377d0f9ba5643eade0dc5925480f1821d90d6d7f9fb8973c481ac8fddee0f3902afda6a1530201ff838809927defcde7fc63ac404aed838d3a8199b25d6cc5055be98008b92b533216b",
+      "redirect_uri": "https://crm-hook.herokuapp.com"
+    }),
+    json: true,
+
+  }).then(function (response) {
     console.log(response);
-    if (!error && response.statusCode == 200) {
-       
-      key=body; 
-      console.log(body);
-       
-      // валидация и 
-      // обработка полученного ответа, заголовков
-     answer = body;
-    }}
+  //  accessToken = JSON.parse(response.access_token);
+  //  refreshToken = JSON.parse(response.refresh_token);
+  //  expires = JSON.parse(response.expires_in);
+  })
+}
 
-}) 
+accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQ5MGRhZjIwOTBkOWQxY2I5MTQyYmFlZTYwOGExYjA4ZjY1YWFjOTkzZjU1YTJjYjZlZTUxNzhhYmFhZWMxNGJjNGE0MjZjMzRiZjJjNTI5In0.eyJhdWQiOiJiNTc3NTAwYi04ZmY5LTRjZmMtYjQzZi0yZTBlOTM0MzYxNzciLCJqdGkiOiJkOTBkYWYyMDkwZDlkMWNiOTE0MmJhZWU2MDhhMWIwOGY2NWFhYzk5M2Y1NWEyY2I2ZWU1MTc4YWJhYWVjMTRiYzRhNDI2YzM0YmYyYzUyOSIsImlhdCI6MTU3ODgzMjM0NCwibmJmIjoxNTc4ODMyMzQ0LCJleHAiOjE1Nzg5MTg3NDQsInN1YiI6IjU3NTY2NDQiLCJhY2NvdW50X2lkIjoyODc1NDg2MCwic2NvcGVzIjpbInB1c2hfbm90aWZpY2F0aW9ucyIsImNybSIsIm5vdGlmaWNhdGlvbnMiXX0.KgkzsS-rUQwSK_UPtIY5axBJmamX-5LWkR4bdSZaqynpuRgoJN-tlVtlgfPiG4sb8rv2GOiRqJb7ww11ZjsyC56_gR6WYO0GS0zT8J_hesydF0bU69vZBMixqDhiI8XNQvHsBQR327KS13LGAmcOGtbuxjTgdJfJsFFbYhWOvB1h3d8IhopwkxnYdPMfrjEN2W-754e3YiUhgCim9EWXfbGPy9krWxfO3Z_znUDGmrzbYMxvodDFP3Fza0o84VjpIWsJBGCFyEGl9pjQns7_DNT_FikcheTwTHJA5raWVzzpp3hzQR5F316rbIsURf_Se8mXsJ3Yg5hVILuvjld4_A';
+
+app.use(async (ctx) => {
+  ctx.response.set({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': ['DELETE', 'PUT', 'PATCH', 'POST'],
+  });
+  if (ctx.request.method === 'OPTIONS') {
+    ctx.response.body = '';
+  }
+
+  ctx.response.body = 'server response';
+
+  if (ctx.request.method === 'POST') {
+   // ctx.response.body = key;
+    let obj = JSON.parse(ctx.request.body);
 
     request({
-        method: 'POST',
-        url: 'https://enmxqv17l3bv.x.pipedream.net/',
-        form: obj,
-        // параметры GET-запроса
-        // index.php?param=edit&value=10
-    /*     qs: {
-          param: 'edit',
-          value: 100
-        } */
-  //     }, function (error, response, body) {
-   //    if (!error && response.statusCode == 200) {
-         // console.log(body);
-         // валидация и 
-         // обработка полученного ответа, заголовков
-    //     answer = body;
-   //    }
-     },
+      method: 'POST',
+      mode: "cors",
+      url: 'https://nickolaylabazov.amocrm.ru/api/v2/leads',
+      //url: 'https://en2pcob5ut59x.x.pipedream.net/',
+      headers: {        
+        'Authorization': `Bearer ${accessToken}`        
+       },
+      //body: newLead,
+      body: obj.unsorted,
+      json: true,
 
-     function (error, response, body) {
-      
-    //  console.log(response)
-      if (!error && response.statusCode == 200) {
-       //      console.log(body);
-            // валидация и 
-            // обработка полученного ответа, заголовков
-           answer = body;
-          }}
-     
-     )
-     // const { file } = ctx.request.files;
-    // ctx.response.body = 'server response'; 
-    // console.log('1');
-
-    }
-  });
-
-/* app.use(async (ctx, next) => {
-
-    ctx.response.body = 'server response';
-  
-    const origin = ctx.request.get('Origin');
-    if (!origin) {
-      return await next();
-    }
-    const headers = { 'Access-Control-Allow-Origin': '*' };
-    if (ctx.request.method !== 'OPTIONS') {
-      ctx.response.set({ ...headers });
-      try {
-        return await next();
-      } catch (e) {
-        e.headers = { ...e.headers, ...headers };
-        throw e;
-      }
-    }
-    if (ctx.request.get('Access-Control-Request-Method')) {
-      ctx.response.set({
-        ...headers,
-        'Access-Control-Allow-Methods': 'GET, POST, PUD, DELETE, PATCH',
-      });
-      if (ctx.request.get('Access-Control-Request-Headers')) {
-        ctx.response.set('Access-Control-Allow-Headers', ctx.request.get('Access-Control-Request-Headers'));
-      }
-      ctx.response.status = 204;
-    }
-}); */
-
-
-
-/* router.get('/api/top-sales', async (ctx, next) => {
-    return fortune(ctx, items.filter(o => topSaleIds.includes(o.id)).map(itemBasicMapper));
+    }).then(function (response) {
+      console.log(response)
+     // key = response;
+    })
+  }
 });
 
-router.get('/api/categories', async (ctx, next) => {
-    return fortune(ctx, categories);
-});
-
-router.get('/api/items', async (ctx, next) => {
-    const { query } = ctx.request;
-
-    const categoryId = query.categoryId === undefined ? 0 : Number(query.categoryId);
-    const offset = query.offset === undefined ? 0 : Number(query.offset);
-    const q = query.q === undefined ? '' : query.q.trim().toLowerCase();
-
-    const filtered = items
-        .filter(o => categoryId === 0 || o.category === categoryId)
-        .filter(o => o.title.toLowerCase().includes(q) || o.color.toLowerCase() === q)
-        .slice(offset, offset + moreCount)
-        .map(itemBasicMapper);
-
-    return fortune(ctx, filtered);
-});
-
-router.get('/api/items/:id', async (ctx, next) => {
-    const id = Number(ctx.params.id);
-    const item = items.find(o => o.id === id);
-    if (item === undefined) {
-        return fortune(ctx, 'Not found', 404);
-    }
-
-    return fortune(ctx, item);
-});
-
-router.post('', async (ctx, next) => {    
-   // const { owner: { phone, address }, items } = JSON.parse(ctx.request.body);
-   console.log('2')
-   console.log(JSON.parse(ctx.request.body))
-});
-
-app.use(router.routes())
-app.use(router.allowedMethods()); */
-
-const port = process.env.PORT || 7070;
+const port = process.env.PORT || 7071;
 const server = http.createServer(app.callback());
 server.listen(port);
