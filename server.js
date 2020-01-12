@@ -1,112 +1,77 @@
 const http = require('http');
-const fs = require('fs');
 const Koa = require('koa');
-const Router = require('koa-router');
 const cors = require('koa2-cors');
 const koaBody = require('koa-body');
-//const request = require('request');
 const request = require('request-promise')
-
-const categories = JSON.parse(fs.readFileSync('./data/categories.json'));
-const items = JSON.parse(fs.readFileSync('./data/products.json'));
-const topSaleIds = [66, 65, 73];
-const moreCount = 6;
 
 const app = new Koa();
 app.use(cors());
 app.use(koaBody({
   json: true,
   urlencoded: true,
-  multipart: true,
 }));
-
-const router = new Router();
-
-let newLead = {
-	add: [{
-		name: "Покупка карандашей",
-		created_at: "1508101200",
-		updated_at: "1508274000",
-		status_id: "13670637",
-		responsible_user_id: "957083",
-		sale: "5000",
-		tags: "pencil, buy",
-		contacts_id: [
-			"1099149"
-		],
-		company_id: "1099148",
-		catalog_elements_id: {
-			99999: {
-				111111: 10
-			}
-		},
-		custom_fields: [{
-				id: "4399649",
-				values: [
-					"3691615",
-					"3691616",
-					"3691617"
-				]
-			},
-			{
-				id: "4399656",
-				values: [{
-					value: "2017-10-26"
-				}]
-			},
-			{
-				id: "4399655",
-				values: [{
-						value: "ул. Охотный ряд, 1",
-						subtype: "address_line_1"
-					},
-					{
-						value: "Москва",
-						subtype: "city"
-					},
-					{
-						value: "101010",
-						subtype: "zip"
-					},
-					{
-						value: "RU",
-						subtype: "country"
-					}
-				]
-			}
-		]
-	}]
-}
 
 let accessToken = null;
 let refreshToken = null;
 let expires = null;
+const client_secret = "BxqngSrHjWuUCa0EOaGpQC6GCqSCZSHDnfZ5XBGQahkf9ugkxWOkiZI6kOWAF3zV";    
+const client_id = "41920f31-d92d-40d3-a4b7-090799e90b82";
+const code = "def50200608e91b94497c5400b191d9f1dbfc7fd4edf327042199bddf761422908203cd5ee314dee272bf3168a2318677e746dfba70a32e4806a0a1314855e0f05e65b9cf35aafbc36d68ec02617f78a364f8f94966079aa9af344071817ed29dcd03bc7f6371fbd5bcac54dc5a9d8650ec2419f59872c7cd384af7115f8bd9e77f1ec6ef54ef4e0b2bd2f5803c955a287ae2759453a53279fb2bdb426c464f7ed6912d3e3ce53cb3ca1708b2e87d024be5665e7c265d01edcdfc84e04160f1e8fdc4cc5e04279adb4a66ed6a438924fb73319076a886f77155225dccac00c5610969fb09fb27b4b9934e2cf488e1b635c5fbdaffce321844365e0674ed7f0c5bba431ebec6267cf2958bfca026ca162f43b2264426d74bdb91239cd8d86198be09ac853ca804c0cb062c6ac976b27bb5b273692bcc146b0985325d5ba3d41f0ab23671f1be52e452d7622e1f34a2d905f2daa0fd0806b72579127fe756472d334fef2acc28dfb8dc0f51052762e9ff2727a994d4b1d7475faaee9db971a821a263fe725a0a04ad61fed1ae03ff75ee43562dc8a483f7024153d0ebbc0afa4d4c6db256772006c9d67d5b7c5787967e9c4ce9d83ad200f2fec91759cbdb6ad6e702e4d5e86b31419";
+const url = 'https://nickolaylabazov.amocrm.ru';
+const redirect_url =  "https://crm-hook.herokuapp.com";
 
-if (accessToken !== null) {
-  request({
+const httpRequest = (url, body, accessToken) => {
+  return request({
     method: 'POST',
     mode: "cors",
-     url: 'https://nickolaylabazov.amocrm.ru/oauth2/access_token',
-  //  url: 'https://en2pcob5ut59x.x.pipedream.net/',
-
-    body: ({
-      "client_id": "b577500b-8ff9-4cfc-b43f-2e0e93436177",
-      "client_secret": "Y67fzyPFpovd5b7aiPv9jSjgU4Ya4oftPSIsNCt7YtyA9zdyqhp9x4Sr8XupBobJ",
-      "grant_type": "authorization_code",
-      "code": "def50200026301329977efd45429fa688663389a4637fccc2a74f51139042adf041fdb558fb4721d542ac0e7c1f46111e446a1bfccb4d7e585fe79a7083cbca006f282cab367fa87095a0be62355c7e3c8c39d9a971587468fa5c78bbf5560faa95b76a202982ddc4645615d3b3e53b4c0b9d9ba75d0f11d0225e29d370a9b8f17cd7cd4942c7f944bef7b33afa357f565bd0692bea9e107a757165fe4fecf12a5a78c1d67185de70a26a05354b9a026f3f7f29dbe2b54f5338bf9cfef7644fdf459a6df21c8b8e7bec5b6b1949b77ff0fd16b98e209a64dcf0011000f5e54c2dcbec04f6e32689662d2eeda113b0952d4677fa4c0deb7e30a4062aa5b84bec354e9e9af9225fad2d2227e5016ff104debb54d9eb64a8f0e08e96606b0ebe09b787e7c61f5f8a9b930d95f0339f3e71693028d38ad2abd6bdc57ea1e7575502c30f4d5a8132d809fb413b363a9e4f5dde0bbb9a857b31127267a7022457f91be1d1bf62ad4cf6b8a916619baeb4962a38ba0b36ea251757235db075445049377d0f9ba5643eade0dc5925480f1821d90d6d7f9fb8973c481ac8fddee0f3902afda6a1530201ff838809927defcde7fc63ac404aed838d3a8199b25d6cc5055be98008b92b533216b",
-      "redirect_uri": "https://crm-hook.herokuapp.com"
-    }),
+    url: url,
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    },
+    body: body,
     json: true,
-
-  }).then(function (response) {
-    console.log(response);
-  //  accessToken = JSON.parse(response.access_token);
-  //  refreshToken = JSON.parse(response.refresh_token);
-  //  expires = JSON.parse(response.expires_in);
   })
 }
 
-accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImQ5MGRhZjIwOTBkOWQxY2I5MTQyYmFlZTYwOGExYjA4ZjY1YWFjOTkzZjU1YTJjYjZlZTUxNzhhYmFhZWMxNGJjNGE0MjZjMzRiZjJjNTI5In0.eyJhdWQiOiJiNTc3NTAwYi04ZmY5LTRjZmMtYjQzZi0yZTBlOTM0MzYxNzciLCJqdGkiOiJkOTBkYWYyMDkwZDlkMWNiOTE0MmJhZWU2MDhhMWIwOGY2NWFhYzk5M2Y1NWEyY2I2ZWU1MTc4YWJhYWVjMTRiYzRhNDI2YzM0YmYyYzUyOSIsImlhdCI6MTU3ODgzMjM0NCwibmJmIjoxNTc4ODMyMzQ0LCJleHAiOjE1Nzg5MTg3NDQsInN1YiI6IjU3NTY2NDQiLCJhY2NvdW50X2lkIjoyODc1NDg2MCwic2NvcGVzIjpbInB1c2hfbm90aWZpY2F0aW9ucyIsImNybSIsIm5vdGlmaWNhdGlvbnMiXX0.KgkzsS-rUQwSK_UPtIY5axBJmamX-5LWkR4bdSZaqynpuRgoJN-tlVtlgfPiG4sb8rv2GOiRqJb7ww11ZjsyC56_gR6WYO0GS0zT8J_hesydF0bU69vZBMixqDhiI8XNQvHsBQR327KS13LGAmcOGtbuxjTgdJfJsFFbYhWOvB1h3d8IhopwkxnYdPMfrjEN2W-754e3YiUhgCim9EWXfbGPy9krWxfO3Z_znUDGmrzbYMxvodDFP3Fza0o84VjpIWsJBGCFyEGl9pjQns7_DNT_FikcheTwTHJA5raWVzzpp3hzQR5F316rbIsURf_Se8mXsJ3Yg5hVILuvjld4_A';
+const refrech = () => {
+
+  const bodyFrech = {
+    "client_id": client_id,
+    "client_secret": client_secret,
+    "grant_type": "refresh_token",
+    "refresh_token": refreshToken,
+    "redirect_uri": redirect_url
+  }
+
+  httpRequest(`${url}/oauth2/access_token`, bodyFrech, '').then(function (response) {
+    accessToken = response.access_token;
+    refreshToken = response.refresh_token;
+    expires = response.expires_in;
+    console.log(accessToken);
+    setTimeout(refrech(), expires * 1000 - 1200000);
+  }).catch(function(error){
+    refrech()
+  });
+}
+
+if (accessToken === null) {
+
+  const body = {
+    "client_id": client_id,
+    "client_secret": client_secret,
+    "code": code,
+    "grant_type": "authorization_code",    
+    "redirect_uri": redirect_url
+  }
+
+  httpRequest(`${url}/oauth2/access_token`, body, '').then(function (response) {
+    accessToken = response.access_token;
+    refreshToken = response.refresh_token;
+    expires = response.expires_in;
+    console.log(accessToken);
+    setTimeout(refrech(), 1000);
+  });
+}
 
 app.use(async (ctx) => {
   ctx.response.set({
@@ -120,26 +85,8 @@ app.use(async (ctx) => {
   ctx.response.body = 'server response';
 
   if (ctx.request.method === 'POST') {
-   // ctx.response.body = key;
-    //let obj = JSON.parse(ctx.request.body);
     let obj = ctx.request.body;
-
-    request({
-      method: 'POST',
-      mode: "cors",
-      url: 'https://nickolaylabazov.amocrm.ru/api/v2/leads',
-     // url: 'https://en2pcob5ut59x.x.pipedream.net/',
-      headers: {        
-        'Authorization': `Bearer ${accessToken}`        
-       },
-      //body: newLead,
-      body: obj.unsorted,
-      json: true,
-
-    }).then(function (response) {
-      console.log(response)
-     // key = response;
-    })
+    response = httpRequest(`${url}/api/v2/leads`, obj.unsorted, accessToken);
   }
 });
 
