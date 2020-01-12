@@ -121,13 +121,14 @@ app.use(async (ctx) => {
 
   if (ctx.request.method === 'POST') {
    // ctx.response.body = key;
-    let obj = JSON.parse(ctx.request.body);
+    //let obj = JSON.parse(ctx.request.body);
+    let obj = ctx.request.body;
 
     request({
       method: 'POST',
       mode: "cors",
-    //  url: 'https://nickolaylabazov.amocrm.ru/api/v2/leads',
-      url: 'https://en2pcob5ut59x.x.pipedream.net/',
+      url: 'https://nickolaylabazov.amocrm.ru/api/v2/leads',
+     // url: 'https://en2pcob5ut59x.x.pipedream.net/',
       headers: {        
         'Authorization': `Bearer ${accessToken}`        
        },
