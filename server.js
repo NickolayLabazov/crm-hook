@@ -14,11 +14,11 @@ app.use(koaBody({
 let accessToken = null;
 let refreshToken = null;
 let expires = null;
-const client_secret = "F8IhhFHOF6iz3SoMAVoiv40WyCbGI6N0aUgHGe4ePAHwnTwwMDVvtNaA2LJCGYsp";    
-const client_id = "858cd6ac-e335-4b49-baf2-4d1401097421";
-const code = "def502003890c16c02b32f95e75cc8b40e7262e180f8187270e91d79f6b46d9a6926471e39f10e489817994525aa51428a4e15b1d4d518526987fd401a331ba3b0a94ecf8a31b9541a1facabfe4bae3a146cbcc218166fd90aabe01cfff086c8ca6e9128adda3640c9404362ef58256a8dd2e1e036904689c9781a215b639902639c5195eacbee0f9ad7cbaad80644c350f45d5d6b4a88598fc01b1b21a39da55827f21ac379b8b3b01b544f9cad403a71330baf1bbec671127cd2ed8760eefcc45094a6408f54442a7184435a06c4b690b05de3817f2bd5a5568b233e0b4059a36d23cd7b4d5dad4b44f584d7a05613e55c459ced50cd03312c8309bd2baaef2cb39977a2e39fb1d7d270473a55a539332744c985596fda1e128e8c30f24bc4eeae620fbaae5a3bdde78706701deea7993119b0a9e689a5daaa144311988205d40aa4a41ede38d3f4184d2ecf375a1b5308aca7e2c387531f23990e00bf2fcdbfa95627349074807b39d3719895b808c27036724db9f3e1397e1eba06f8dc42d86ca868a46371a4f21f9c3ccadd4f0d3a183c90061607c78b338688a1200e87f29760d53ec140acadc4d1e977c773f3c00fc05611b1db9b8b49b702965b905e98035e2aafc45033";
+const client_secret = "mjf7snk9YLiPgEot2LBa4B4SdmKsS0hXsb0jkb6UchlfadqRHO5yk3A2gpyUIOg4";
+const client_id = "bffec9d4-21e4-4e41-8473-78cbf2f1beb6";
+const code = "def502005ef2346ae2937b2a8439228e47c7452f8112f98556ea6934f6f6dc6fa8a7213550d14700d009dad1b0a4cb4b2d059c5e56a3b05d0872fab69c374dff836c4874c3f2c2b8b50907ee059b1278c207048eebbb78c143c5890daaf33646a7e1c2544fe2fb4c179ac9669056338ac88dd4ca7cccee0b8fadf740fe1beaa4c23b0b99952c6218bcebb2eff67c0648a45ec3368b3d256d79a3b45e0839175cfdf756a9abe407802689371cfa0e25e738431b91856e4cc6ae7ebbab29bc2a029a05a698ab97a03dbb5e9c73269d43cfd5e24888e71035869b4c98780b94fad4ee3c440f4138124576c3b8fb618f9067d2b8b99b365541101e453db2905007a07cecd5bd38a8b02f3201215efc6e554dd476f37f11193eb090d0b6992ee5493c9459d41da63fa9b80fc094efa8cd706188fcb13577d26b1b2f68c2e8edd55fef19eae9dc815f6323fae86a73ee36fe797738c8f2840a9d853510ca2b08229473a7f00d028f2f58ecc44cb657dc281401fad0021c1cc249af429338c0783000eed90235a9ac9cb5a776f4438bbd727209b9adbe72b6f3614686b55280e0bce20fbcc6fea2a90ae977f2bc2700c8b2760a39952db644d951c9579dbc9aedadf54837713865245d6d45";
 const url = 'https://nickolaylabazov.amocrm.ru';
-const redirect_url =  "https://crm-hook.herokuapp.com";
+const redirect_url = "https://crm-hook.herokuapp.com";
 
 const httpRequest = (url, body, accessToken) => {
   return request({
@@ -48,8 +48,8 @@ const refrech = () => {
     refreshToken = response.refresh_token;
     expires = response.expires_in;
     console.log(accessToken);
-    setTimeout(refrech(), expires * 1000 - 1200000);
-  }).catch(function(error){
+    setTimeout(() => refrech(), expires * 1000 - 1200000);
+  }).catch(function (error) {
     refrech()
   });
 }
@@ -60,7 +60,7 @@ if (accessToken === null) {
     "client_id": client_id,
     "client_secret": client_secret,
     "code": code,
-    "grant_type": "authorization_code",    
+    "grant_type": "authorization_code",
     "redirect_uri": redirect_url
   }
 
@@ -69,7 +69,7 @@ if (accessToken === null) {
     refreshToken = response.refresh_token;
     expires = response.expires_in;
     console.log(accessToken);
-    setTimeout(refrech(), 1000);
+    setTimeout(() => refrech(), expires * 1000 - 1200000);
   });
 }
 
